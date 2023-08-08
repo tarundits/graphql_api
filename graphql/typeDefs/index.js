@@ -1,9 +1,8 @@
 import { gql } from "graphql-tag";
+import { userTypeDefs } from "./user.typedefs.js";
 
 const typeDefs = gql`
-	type Query {
-		hello: String
-	}
+	${userTypeDefs}
 `;
 
 export { typeDefs };
