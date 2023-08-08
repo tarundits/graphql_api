@@ -1,4 +1,4 @@
-import { signup } from "../../controllers/auth.controller.js";
+import { signup, login } from "../../controllers/auth.controller.js";
 
 const userResolver = {
 	Query: {
@@ -6,7 +6,10 @@ const userResolver = {
 	},
 
 	Mutation: {
-		signupUser: signup
+		signupUser: signup,
+		loginUser: async (parent, args, context) => {
+		    return await login(parent, args, context);
+		},
 	}
 }
 

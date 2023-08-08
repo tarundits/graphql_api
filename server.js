@@ -5,6 +5,8 @@ import { expressMiddleware } from '@apollo/server/express4';
 import connectDB from './utils/connectDB.js';
 import app from './app.js';
 import { typeDefs } from './graphql/typeDefs/index.js';
+import cookieParser from 'cookie-parser';
+
 import { resolvers } from './graphql/resolvers/index.js';
 import dotenv from 'dotenv';
 
@@ -16,7 +18,7 @@ const httpServer = http.createServer(app);
 	const server = new ApolloServer({
 		typeDefs,
 		resolvers,
-		plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
+		plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
 	});
 
 	// CONNECT DB
@@ -24,7 +26,11 @@ const httpServer = http.createServer(app);
 
 	await server.start();
 
-	app.use(expressMiddleware(server));
+	app.use('/graphql',cookieParser(),expressMiddleware(server , {
+        context: async ({ req , res }) => {
+         return {req, res}  
+		},
+      }));
 
 	await new Promise((resolve) => httpServer.listen(process.env.PORT, '0.0.0.0', resolve));
 	console.log(
