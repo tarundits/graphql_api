@@ -1,4 +1,6 @@
 import userModel from "../models/user.model.js";
+import { GraphQLError } from 'graphql';
+import errorHandler from './error.controller.js';
 
 const signup = async (
 	parent, 
@@ -18,10 +20,14 @@ const signup = async (
 			user
 		}
 	} catch (error) {
-		return {
-			status: 'failure',
-			error
+		if (error.code === 11000) {
+			throw new GraphQLError('Duplicate entry exists', {
+				extensions: {
+					code: 'FORBIDDEN',
+				}
+			});
 		}
+		errorHandler(error);
 	}
 }
 
